@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
 # Source Info
   s.source       =  {
     :git => 'https://github.com/robss88/CFFoundation-iOS.git',
-    :tag => s.version.to_s
+    :tag => s.version
   }
   s.source_files = 'Classes/**/*.swift'
 
