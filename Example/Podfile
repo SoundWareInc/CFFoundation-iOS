@@ -1,0 +1,11 @@
+use_frameworks!
+platform :ios, '10.0'
+target 'CFFoundation_Example' do
+  pod 'CFFoundation', :path => '../'
+
+  target 'CFFoundation_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

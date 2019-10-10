@@ -1,0 +1,31 @@
+PODS:
+  - Alamofire (5.0.0-beta.6)
+  - CFFoundation (1.0.0):
+    - Alamofire (~> 5.0.0-beta.5)
+    - Socket.IO-Client-Swift
+  - Socket.IO-Client-Swift (15.0.0):
+    - Starscream (~> 3.1)
+  - Starscream (3.1.0)
+
+DEPENDENCIES:
+  - CFFoundation (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - Socket.IO-Client-Swift
+    - Starscream
+
+EXTERNAL SOURCES:
+  CFFoundation:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Alamofire: cd08a4402bd12cacd0c66f23fb12fec8d6b965e4
+  CFFoundation: 58c9b7cdb1908eeb417699d76981823d68c524a0
+  Socket.IO-Client-Swift: c039a808195d22a7192962841b8c035cb61ea49e
+  Starscream: 08172b481e145289c4930cb567230fb55897cfa4
+
+PODFILE CHECKSUM: 6f0b8a0c90201b21b9313ee014f9bf4cca3b3e37
+
+COCOAPODS: 1.6.1
