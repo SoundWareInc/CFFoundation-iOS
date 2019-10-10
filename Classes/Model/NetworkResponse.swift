@@ -13,7 +13,6 @@ struct SignInResponse: Codable {
     var user: CFUser
 }
 
-
 struct ResponseError: Codable {
     var error: String?
 }

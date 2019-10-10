@@ -23,11 +23,11 @@ public class CFFoundation {
     public var chatSessions: [CFChatSession]?
     
     //MARK: User Authentication
-    public func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
+    public func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<CFUserProtocol,NetworkError>) -> Void) {
         APIClient.signUp(email: email, username: username, password: password, completionHandler: completionHandler)
     }
     
-    public func signIn(email: String, password: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
+    public func signIn(email: String, password: String, completionHandler: @escaping (Result<CFUserProtocol,NetworkError>) -> Void) {
         APIClient.signIn(email: email, password: password, completionHandler: completionHandler)
     }
     

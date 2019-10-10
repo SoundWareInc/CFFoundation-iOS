@@ -7,7 +7,14 @@
 
 import Foundation
 
-public struct CFUser: Codable, Equatable {
+public protocol CFUserProtocol {
+     var id: String? { get set }
+     var email: String? { get set }
+     var username: String? { get set }
+     var chatRooms: [String]? { get set }
+}
+
+public struct CFUser: Codable, Equatable, CFUserProtocol {
     public var id: String?
     public var email: String?
     public var username: String?
