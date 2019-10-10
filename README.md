@@ -1,6 +1,6 @@
 # CFFoundation
 
-Foundation for all of my iOS projects with some example UI code which you can strip.
+Foundation for all of my iOS projects with some example code.
 
 This project depends on my backend node-foundation project which can be found here:
 https://github.com/robss88/node-foundation
