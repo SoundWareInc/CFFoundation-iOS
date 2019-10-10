@@ -22,7 +22,7 @@ pod 'CFFoundation'
 
 ## Author
 
-ravellarellation, robertavellar@gmail.com
+ravellar, robertavellar@gmail.com
 
 ## License
 
