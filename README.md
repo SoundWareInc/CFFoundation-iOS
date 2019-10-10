@@ -1,9 +1,17 @@
 # CFFoundation
 
-[![CI Status](https://img.shields.io/travis/ravellarellation/CFFoundation.svg?style=flat)](https://travis-ci.org/ravellarellation/CFFoundation)
-[![Version](https://img.shields.io/cocoapods/v/CFFoundation.svg?style=flat)](https://cocoapods.org/pods/CFFoundation)
-[![License](https://img.shields.io/cocoapods/l/CFFoundation.svg?style=flat)](https://cocoapods.org/pods/CFFoundation)
-[![Platform](https://img.shields.io/cocoapods/p/CFFoundation.svg?style=flat)](https://cocoapods.org/pods/CFFoundation)
+Foundation for all of my iOS projects with some example UI code which you can strip.
+
+This project depends on my backend node-foundation project which can be found here:
+https://github.com/robss88/node-foundation
+
+Please feel free to use in your own projects and/or contribute.
+
+## Features
+
+- User authentication
+- Some User/Authentication Caching
+- Chat
 
 ## Example
 
@@ -17,7 +25,7 @@ CFFoundation is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'CFFoundation'
+pod 'CFFoundation', :git => 'https://github.com/robss88/CFFoundation-iOS.git'
 ```
 
 ## Author
