@@ -17,11 +17,11 @@ class APISession {
         }
     }
     
-    static var currentUser: User? {
+    static var currentUser: CFUser? {
         set {
-            User.save(user: newValue, with: "cached_user")
+            CFUser.save(user: newValue, with: "cached_user")
         } get {
-            return User.get(from: "cached_user")
+            return CFUser.get(from: "cached_user")
         }
     }
     

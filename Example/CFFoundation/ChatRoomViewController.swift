@@ -15,7 +15,7 @@ class ChatRoomViewController: RAViewController {
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var messageTextFieldToBottomViewConstraint: NSLayoutConstraint!
 
-    var chatSession: ChatSession?
+    var chatSession: CFChatSession?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,20 +80,20 @@ extension ChatRoomViewController: UITableViewDelegate {
 }
 
 extension ChatRoomViewController: ChatSessionDelegate {
-    func didRecieveNewMessages(chatSession: ChatSession, messages: [Message]) {
+    func didRecieveNewMessages(chatSession: CFChatSession, messages: [CFChatMessage]) {
         tableView.reloadData()
         print(messages)
     }
     
-    func didJoinSession(chatSession: ChatSession) {
+    func didJoinSession(chatSession: CFChatSession) {
         print(chatSession)
     }
     
-    func didDisconnectSession(chatSession: ChatSession) {
+    func didDisconnectSession(chatSession: CFChatSession) {
         print(chatSession)
     }
     
-    func didSendMessage(chatSession: ChatSession, message: String) {
+    func didSendMessage(chatSession: CFChatSession, message: String) {
         print(message)
     }
 }

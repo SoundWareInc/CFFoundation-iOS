@@ -9,7 +9,7 @@
 import Foundation
 
 extension APIClient {
-    static func chatInvite(user: User, to roomId: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
+    static func chatInvite(user: CFUser, to roomId: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
         request(route: "/chat/" + roomId + "/invite/" + user.id!, method: .post) { (result) in
             switch result {
             case .success( _):

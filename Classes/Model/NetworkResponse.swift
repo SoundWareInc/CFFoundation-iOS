@@ -10,7 +10,7 @@ import Foundation
 
 struct SignInResponse: Codable {
     var token: String
-    var user: User
+    var user: CFUser
 }
 
 

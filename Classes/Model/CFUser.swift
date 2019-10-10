@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct User: Codable, Equatable {
+public struct CFUser: Codable, Equatable {
     public var id: String?
     public var email: String?
     public var username: String?
@@ -20,13 +20,13 @@ public struct User: Codable, Equatable {
         case chatRooms
     }
     
-    public static func ==(lhs: User, rhs: User) -> Bool {
+    public static func ==(lhs: CFUser, rhs: CFUser) -> Bool {
         return lhs.id == rhs.id
     }
 }
 
-extension User {
-    static func save(user: User?, with key: String) {
+extension CFUser {
+    static func save(user: CFUser?, with key: String) {
         if let user = user, let encoded = try? JSONEncoder().encode(user) {
             UserDefaults.standard.set(encoded, forKey: key)
         } else {
@@ -34,9 +34,9 @@ extension User {
         }
     }
     
-    static func get(from userDefaultsKey: String) -> User? {
+    static func get(from userDefaultsKey: String) -> CFUser? {
         guard let savedPerson = UserDefaults.standard.object(forKey: userDefaultsKey) as? Data else
         { return nil}
-        return try? JSONDecoder().decode(User.self, from: savedPerson)
+        return try? JSONDecoder().decode(CFUser.self, from: savedPerson)
     }
 }

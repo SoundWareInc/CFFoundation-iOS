@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 
 extension APIClient {
-    static func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<User,NetworkError>) -> Void) {
+    static func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
         let parameters =  ["email" : email, "password" : password, "username" : username]
         request(route: "/users/signup", method: .post, parameters: parameters) { (result) in
             switch result {
@@ -28,7 +28,7 @@ extension APIClient {
         }
     }
     
-    static func signIn(email: String, password: String, completionHandler: @escaping (Result<User,NetworkError>) -> Void) {
+    static func signIn(email: String, password: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
         let parameters =  ["email" : email, "password" : password]
         request(route: "/users/signin", method: .post, parameters: parameters) { (result) in
             switch result {
@@ -47,12 +47,12 @@ extension APIClient {
         }
     }
     
-    static func getUser(by id: String, completionHandler: @escaping (Result<User,NetworkError>) -> Void) {
+    static func getUser(by id: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
         request(route: "/users/" + id, method: .get) { (result) in
             switch result {
             case .success(let data):
                 do {
-                    let user = try JSONDecoder().decode(User.self, from: data)
+                    let user = try JSONDecoder().decode(CFUser.self, from: data)
                     completionHandler(.success(user))
                 } catch let error {
                     completionHandler(.failure(.init(message: error.localizedDescription)))
@@ -63,12 +63,12 @@ extension APIClient {
         }
     }
     
-    static func getAllUsers(completionHandler: @escaping (Result<[User],NetworkError>) -> Void) {
+    static func getAllUsers(completionHandler: @escaping (Result<[CFUser],NetworkError>) -> Void) {
         request(route: "/users", method: .get) { (result) in
             switch result {
             case .success(let data):
                 do {
-                    let users = try JSONDecoder().decode([User].self, from: data)
+                    let users = try JSONDecoder().decode([CFUser].self, from: data)
                     completionHandler(.success(users))
                 } catch let error {
                     completionHandler(.failure(.init(message: error.localizedDescription)))

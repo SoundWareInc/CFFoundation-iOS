@@ -12,20 +12,22 @@ public class CFFoundation {
     
     public static let shared = CFFoundation()
     
+    public var hostURL = "localhost:3000"
+
     public var isLoggedIn: Bool {
         return APISession.currentUser != nil
     }
-    public var currentUser: User? {
+    public var currentUser: CFUser? {
         return APISession.currentUser
     }
-    public var chatSessions: [ChatSession]?
+    public var chatSessions: [CFChatSession]?
     
     //MARK: User Authentication
-    public func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<User,NetworkError>) -> Void) {
+    public func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
         APIClient.signUp(email: email, username: username, password: password, completionHandler: completionHandler)
     }
     
-    public func signIn(email: String, password: String, completionHandler: @escaping (Result<User,NetworkError>) -> Void) {
+    public func signIn(email: String, password: String, completionHandler: @escaping (Result<CFUser,NetworkError>) -> Void) {
         APIClient.signIn(email: email, password: password, completionHandler: completionHandler)
     }
     
@@ -34,14 +36,14 @@ public class CFFoundation {
     }
     
     //MARK: Chat
-    public func joinChat(room: String) -> ChatSession? {
+    public func joinChat(room: String) -> CFChatSession? {
         guard let user = currentUser else { return nil }
-        let chatSession = ChatSession(user: user, room: room)
+        let chatSession = CFChatSession(user: user, room: room)
         chatSessions?.append(chatSession)
         return chatSession
     }
     
-    public func leave(chatSession: ChatSession) {
+    public func leave(chatSession: CFChatSession) {
         chatSessions?.removeAll(where: { (session) -> Bool in
             session == chatSession
         })

@@ -34,7 +34,7 @@ class ViewController: RAViewController {
         }
     }
     
-    lazy var signInCompletionHandler: ((Result<User,NetworkError>) -> Void) = { (result) in
+    lazy var signInCompletionHandler: ((Result<CFUser,NetworkError>) -> Void) = { (result) in
         switch result {
         case .success(let user):
             self.loggedIn()

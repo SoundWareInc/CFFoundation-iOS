@@ -9,24 +9,24 @@ import Foundation
 import SocketIO
 
 public protocol ChatSessionDelegate {
-    func didRecieveNewMessages(chatSession: ChatSession, messages: [Message])
-    func didJoinSession(chatSession: ChatSession)
-    func didDisconnectSession(chatSession: ChatSession)
-    func didSendMessage(chatSession: ChatSession, message: String)
+    func didRecieveNewMessages(chatSession: CFChatSession, messages: [CFChatMessage])
+    func didJoinSession(chatSession: CFChatSession)
+    func didDisconnectSession(chatSession: CFChatSession)
+    func didSendMessage(chatSession: CFChatSession, message: String)
 }
 
-public class ChatSession: Equatable {
+public class CFChatSession: Equatable {
     
     public var delegate: ChatSessionDelegate?
     
     var manager = SocketManager(socketURL: URL(string: Configuration.API.BaseChatURL)!, config: [.log(true), .compress])
     var socket: SocketIOClient?
     
-    var user: User
+    var user: CFUser
     var room: String
-    public var messages = [Message]()
+    public var messages = [CFChatMessage]()
 
-    required init(user: User, room: String) {
+    required init(user: CFUser, room: String) {
         self.user = user
         self.room = room
         setupWebSocket()
@@ -45,12 +45,12 @@ public class ChatSession: Equatable {
         }
         socket?.on("newMessage") { [weak self] data, ack in
             guard let self = self else { return }
-            var newMessages = [Message]()
+            var newMessages = [CFChatMessage]()
             
             for i in data {
                 if let messageData = i as? [String : Any] {
                     let jsonData = try! JSONSerialization.data(withJSONObject: messageData, options: .prettyPrinted)
-                    guard let message = try? JSONDecoder().decode(Message.self, from: jsonData) else {
+                    guard let message = try? JSONDecoder().decode(CFChatMessage.self, from: jsonData) else {
                         print("Error: Couldn't decode data into Message")
                         return
                     }
@@ -90,8 +90,8 @@ public class ChatSession: Equatable {
     }
 }
 
-extension ChatSession {
-    public static func == (lhs: ChatSession, rhs: ChatSession) -> Bool {
+extension CFChatSession {
+    public static func == (lhs: CFChatSession, rhs: CFChatSession) -> Bool {
         return lhs.room == rhs.room
     }
 }

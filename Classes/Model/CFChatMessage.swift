@@ -7,8 +7,8 @@
 
 import Foundation
 
-public struct Message: Codable {
+public struct CFChatMessage: Codable {
     public var text: String?
-    public var from: User?
+    public var from: CFUser?
     public var createdAt: Int?
 }

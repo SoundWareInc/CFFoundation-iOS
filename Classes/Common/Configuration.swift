@@ -8,8 +8,7 @@
 import Foundation
 enum Configuration {
     enum API {
-        static let HostURL = "localhost:3000"
-        static let BaseURL = "http://" + HostURL
-        static let BaseChatURL = "ws://" + HostURL
+        static let BaseURL = "http://" + CFFoundation.shared.hostURL
+        static let BaseChatURL = "ws://" + CFFoundation.shared.hostURL
     }
 }
