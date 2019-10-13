@@ -7,28 +7,21 @@
 
 import Foundation
 
-public protocol CFUserProtocol {
-     var id: String? { get set }
+public protocol CFUserProtocol: Codable {
+     var _id: String? { get set }
      var email: String? { get set }
      var username: String? { get set }
      var chatRooms: [String]? { get set }
 }
 
-public struct CFUser: Codable, Equatable, CFUserProtocol {
-    public var id: String?
+public struct CFUser: Equatable, CFUserProtocol {
+    public var _id: String?
     public var email: String?
     public var username: String?
     public var chatRooms: [String]?
-    
-    enum CodingKeys: String, CodingKey {
-        case id = "_id"
-        case email
-        case username
-        case chatRooms
-    }
-    
+
     public static func ==(lhs: CFUser, rhs: CFUser) -> Bool {
-        return lhs.id == rhs.id
+        return lhs._id == rhs._id
     }
 }
 

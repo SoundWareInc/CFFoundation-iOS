@@ -23,7 +23,6 @@ class APIClient {
                 completionHandler(.failure(.init(message: "Bad Data")))
                 return
             }
-            data.logString()
             do {
                 let networkError = try JSONDecoder().decode(ResponseValidationError.self, from: data)
                 if let error = networkError.details.first {
@@ -36,4 +35,37 @@ class APIClient {
             }
         }
     }
+    
+    static func getItem<T: Codable>(type: T.Type, from route: String, parameters: Parameters? = nil, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        request(route: route, method: .get, parameters: parameters) { (result) in
+            switch result {
+            case .success(let data):
+                do {
+                    let item = try JSONDecoder().decode(type.self, from: data)
+                    completionHandler(.success(item))
+                } catch let error {
+                    completionHandler(.failure(.init(message: error.localizedDescription)))
+                }
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
+    static func getItems<T: Codable>(type: [T].Type, from route: String, parameters: Parameters? = nil, completionHandler: @escaping (Result<[T],NetworkError>) -> Void) {
+        request(route: route, method: .get, parameters: parameters) { (result) in
+            switch result {
+            case .success(let data):
+                do {
+                    let item = try JSONDecoder().decode(type.self, from: data)
+                    completionHandler(.success(item))
+                } catch let error {
+                    completionHandler(.failure(.init(message: error.localizedDescription)))
+                }
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+
 }

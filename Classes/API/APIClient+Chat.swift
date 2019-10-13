@@ -10,7 +10,7 @@ import Foundation
 
 extension APIClient {
     static func chatInvite(user: CFUserProtocol, to roomId: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
-        request(route: "/chat/" + roomId + "/invite/" + user.id!, method: .post) { (result) in
+        request(route: "/chat/" + roomId + "/invite/" + user._id!, method: .post) { (result) in
             switch result {
             case .success( _):
                 completionHandler(.success(roomId))

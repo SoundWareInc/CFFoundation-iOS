@@ -23,12 +23,12 @@ public class CFFoundation {
     public var chatSessions: [CFChatSession]?
     
     //MARK: User Authentication
-    public func signUp(email: String, username: String, password: String, completionHandler: @escaping (Result<CFUserProtocol,NetworkError>) -> Void) {
-        APIClient.signUp(email: email, username: username, password: password, completionHandler: completionHandler)
+    public func signUp<T: CFUserProtocol>(email: String, username: String, password: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        APIClient.signUp(email: email, username: username, password: password, userType: userType, completionHandler: completionHandler)
     }
     
-    public func signIn(email: String, password: String, completionHandler: @escaping (Result<CFUserProtocol,NetworkError>) -> Void) {
-        APIClient.signIn(email: email, password: password, completionHandler: completionHandler)
+    public func signIn<T: CFUserProtocol>(email: String, password: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        APIClient.signIn(email: email, password: password, userType: userType, completionHandler: completionHandler)
     }
     
     public func logOut() {
@@ -49,4 +49,14 @@ public class CFFoundation {
         })
         chatSession.leave()
     }
+    
+    //MARK: Generic Request
+    public func getItem<T: Codable>(type: T.Type, from route: String, parameters: [String : Any]? = nil, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        APIClient.getItem(type: type, from: route, parameters: parameters, completionHandler: completionHandler)
+    }
+    
+    public func getItems<T: Codable>(type: [T].Type, from route: String, parameters: [String : Any]? = nil, completionHandler: @escaping (Result<[T],NetworkError>) -> Void) {
+        APIClient.getItems(type: type, from: route, parameters: parameters, completionHandler: completionHandler)
+    }
+
 }
