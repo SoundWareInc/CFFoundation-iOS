@@ -62,4 +62,12 @@ public class CFFoundation {
     public func postItem<T: Codable>(itemToPost: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
         APIClient.postItem(itemToPost: itemToPost, type: type, to: route, completionHandler: completionHandler)
     }
+    
+    public func putItem<T: Codable>(itemToPut: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        APIClient.putItem(itemToPut: itemToPut, type: type, to: route, completionHandler: completionHandler)
+    }
+    
+    public func deleteItem(route: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
+        APIClient.deleteItem(route: route, completionHandler: completionHandler)
+    }
 }

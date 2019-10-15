@@ -90,4 +90,39 @@ class APIClient {
             completionHandler(.failure(.init(message: error.localizedDescription)))
         }
     }
+    
+    static func putItem<T: Codable>(itemToPut: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        let encoder = JSONEncoder()
+        do {
+            let jsonData = try encoder.encode(itemToPut)
+            let params = try JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? [String: Any]
+            request(route: route, method: .put, parameters: params) { (result) in
+                switch result {
+                case .success(let data):
+                    do {
+                        let item = try JSONDecoder().decode(type.self, from: data)
+                        completionHandler(.success(item))
+                    } catch let error {
+                        completionHandler(.failure(.init(message: error.localizedDescription)))
+                    }
+                case .failure(let error):
+                    completionHandler(.failure(error))
+                }
+            }
+        } catch let error {
+            completionHandler(.failure(.init(message: error.localizedDescription)))
+        }
+    }
+    
+    static func deleteItem(route: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
+        request(route: route, method: .delete) { (result) in
+            switch result {
+            case .success(_):
+                completionHandler(.success("deleted"))
+            case .failure(let error):
+                completionHandler(.failure(error))
+            }
+        }
+    }
+    
 }
