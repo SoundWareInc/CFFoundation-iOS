@@ -8,10 +8,6 @@
 import Foundation
 import Alamofire
 
-public struct NetworkError: Error, Codable {
-    var message: String?
-}
-
 class APIClient {
     static func request(route: String, method: HTTPMethod, parameters: Parameters? = nil, completionHandler: @escaping (Result<Data,NetworkError>) -> Void) {
         var header: HTTPHeaders?
@@ -31,7 +27,12 @@ class APIClient {
                     completionHandler(.failure(.init(message: "Network Error")))
                 }
             } catch {
-                completionHandler(.success(data))
+                do {
+                    let networkError = try JSONDecoder().decode(ResponseError.self, from: data)
+                    completionHandler(.failure(networkError.error))
+                } catch {
+                    completionHandler(.success(data))
+                }
             }
         }
     }

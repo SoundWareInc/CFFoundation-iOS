@@ -14,7 +14,7 @@ struct SignInResponse: Codable {
 }
 
 struct ResponseError: Codable {
-    var error: String?
+    var error: NetworkError
 }
 
 struct ResponseValidationError: Codable {
@@ -23,3 +23,6 @@ struct ResponseValidationError: Codable {
     var details: [NetworkError]
 }
 
+public struct NetworkError: Error, Codable {
+    public var message: String
+}
