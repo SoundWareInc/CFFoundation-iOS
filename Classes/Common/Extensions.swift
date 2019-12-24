@@ -18,7 +18,7 @@ extension Encodable {
 }
 
 extension Data {
-    func toString() -> String? {
+    public func toString() -> String? {
         return String(data: self, encoding: .utf8)
     }
     

@@ -22,14 +22,16 @@ class APIClient {
             }
             do {
                 let networkError = try JSONDecoder().decode(ResponseValidationError.self, from: data)
-                if let error = networkError.details.first {
+                if var error = networkError.details.first {
+                    error.responseData = data
                     completionHandler(.failure(error))
                 } else {
-                    completionHandler(.failure(.init(message: "Network Error")))
+                    completionHandler(.failure(.init(message: "Network Error", responseData: data)))
                 }
             } catch {
                 do {
-                    let networkError = try JSONDecoder().decode(ResponseError.self, from: data)
+                    var networkError = try JSONDecoder().decode(ResponseError.self, from: data)
+                    networkError.error.responseData = data
                     completionHandler(.failure(networkError.error))
                 } catch {
                     completionHandler(.success(data))
@@ -46,7 +48,7 @@ class APIClient {
                     let item = try JSONDecoder().decode(type.self, from: data)
                     completionHandler(.success(item))
                 } catch let error {
-                    completionHandler(.failure(.init(message: error.localizedDescription)))
+                    completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -62,7 +64,7 @@ class APIClient {
                     let item = try JSONDecoder().decode(type.self, from: data)
                     completionHandler(.success(item))
                 } catch let error {
-                    completionHandler(.failure(.init(message: error.localizedDescription)))
+                    completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -82,7 +84,7 @@ class APIClient {
                         let item = try JSONDecoder().decode(type.self, from: data)
                         completionHandler(.success(item))
                     } catch let error {
-                        completionHandler(.failure(.init(message: error.localizedDescription)))
+                        completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
                     }
                 case .failure(let error):
                     completionHandler(.failure(error))
@@ -105,7 +107,7 @@ class APIClient {
                         let item = try JSONDecoder().decode(type.self, from: data)
                         completionHandler(.success(item))
                     } catch let error {
-                        completionHandler(.failure(.init(message: error.localizedDescription)))
+                        completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
                     }
                 case .failure(let error):
                     completionHandler(.failure(error))

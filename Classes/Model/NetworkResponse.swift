@@ -25,4 +25,5 @@ struct ResponseValidationError: Codable {
 
 public struct NetworkError: Error, Codable {
     public var message: String
+    public var responseData: Data?
 }

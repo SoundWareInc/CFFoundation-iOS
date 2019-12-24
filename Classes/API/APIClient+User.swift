@@ -21,7 +21,7 @@ extension APIClient {
                     APISession.currentUser = response.user
                     getCurrentUser(userType: userType, completionHandler: completionHandler)
                 } catch let error {
-                    completionHandler(.failure(.init(message: error.localizedDescription)))
+                    completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -40,7 +40,7 @@ extension APIClient {
                     APISession.currentUser = response.user
                     getCurrentUser(userType: userType, completionHandler: completionHandler)
                 } catch let error {
-                    completionHandler(.failure(.init(message: error.localizedDescription)))
+                    completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))
