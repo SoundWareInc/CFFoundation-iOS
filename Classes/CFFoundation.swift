@@ -70,4 +70,10 @@ public class CFFoundation {
     public func deleteItem(route: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
         APIClient.deleteItem(route: route, completionHandler: completionHandler)
     }
+    
+    //MARK: Session
+    
+    public func cancelAllRequest() {
+        APIClient.session.cancelAllRequests()
+    }
 }

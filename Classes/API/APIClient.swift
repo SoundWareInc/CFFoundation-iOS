@@ -9,13 +9,14 @@ import Foundation
 import Alamofire
 
 class APIClient {
+    static let session = Session()
     static func request(route: String, method: HTTPMethod, parameters: Parameters? = nil, completionHandler: @escaping (Result<Data,NetworkError>) -> Void) {
         var header: HTTPHeaders?
         if let token = APISession.token {
             header = HTTPHeaders(["Authorization" : token])
         }
         guard let encodedRoute = (Configuration.API.BaseURL + route).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return  }
-        AF.request(encodedRoute, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: header).response { (data) in
+        session.request(encodedRoute, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: header).response { (data) in
             guard let data = data.data else {
                 completionHandler(.failure(.init(message: "Bad Data")))
                 return

@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '10.0'
   s.ios.dependency 'Socket.IO-Client-Swift'
-  s.ios.dependency 'Alamofire', '~> 5.0.0-beta.5'
+  s.ios.dependency 'Alamofire', '~> 5.0.0-rc.3'
 
   s.requires_arc = true
 end
