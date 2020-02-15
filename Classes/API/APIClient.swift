@@ -12,7 +12,9 @@ class APIClient {
     static let session = Session()
     static func request(route: String, method: HTTPMethod, parameters: Parameters? = nil, completionHandler: @escaping (Result<Data,NetworkError>) -> Void) {
         var header: HTTPHeaders?
-        if let token = APISession.token {
+        if let token = APISession.customToken {
+            header = HTTPHeaders(["Authorization" : "Bearer " + token])
+        } else if let token = APISession.token {
             header = HTTPHeaders(["Authorization" : token])
         }
         guard let encodedRoute = (Configuration.API.BaseURL + route).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return  }

@@ -13,13 +13,27 @@ public class CFFoundation {
     public static let shared = CFFoundation()
     
     public var hostURL = "localhost:3000"
-
+    
     public var isLoggedIn: Bool {
-        return APISession.currentUser != nil
+        return APISession.token != nil || APISession.customToken != nil
     }
+    
     public var currentUser: CFUser? {
         return APISession.currentUser
     }
+    
+    public var token: String? {
+        return APISession.token
+    }
+    
+    public var customToken: String? {
+        set {
+            APISession.customToken = newValue
+        } get {
+            return APISession.customToken
+        }
+    }
+    
     public var chatSessions: [CFChatSession]?
     
     //MARK: User Authentication

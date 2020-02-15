@@ -8,8 +8,17 @@
 
 import Foundation
 
-class APISession {    
-   static var token: String? {
+class APISession {
+    
+    static var customToken: String? {
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: "custom_token")
+        } get {
+            return UserDefaults.standard.string(forKey: "custom_token")
+        }
+    }
+    
+    static var token: String? {
         set {
             UserDefaults.standard.setValue(newValue, forKey: "token")
         } get {
@@ -26,6 +35,8 @@ class APISession {
     }
     
     static func logOut() {
+        token = nil
+        customToken = nil
         currentUser = nil
     }
 }
