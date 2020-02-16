@@ -9,15 +9,7 @@
 import Foundation
 
 class APISession {
-    
-    static var customToken: String? {
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: "custom_token")
-        } get {
-            return UserDefaults.standard.string(forKey: "custom_token")
-        }
-    }
-    
+
     static var token: String? {
         set {
             UserDefaults.standard.setValue(newValue, forKey: "token")
@@ -29,8 +21,25 @@ class APISession {
     static var currentUser: CFUser? {
         set {
             CFUser.save(user: newValue, with: "cached_user")
+            currentUserID = newValue?._id
         } get {
             return CFUser.get(from: "cached_user")
+        }
+    }
+    
+    static var customToken: String? {
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: "custom_token")
+        } get {
+            return UserDefaults.standard.string(forKey: "custom_token")
+        }
+    }
+    
+    static var currentUserID: String? {
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: "current_userid")
+        } get {
+            return UserDefaults.standard.string(forKey: "current_userid")
         }
     }
     

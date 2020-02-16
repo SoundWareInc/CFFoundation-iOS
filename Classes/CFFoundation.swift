@@ -19,7 +19,19 @@ public class CFFoundation {
     }
     
     public var currentUser: CFUser? {
-        return APISession.currentUser
+        set {
+            APISession.currentUser = newValue
+        } get {
+            return APISession.currentUser
+        }
+    }
+    
+    public var currentUserID: String? {
+        set {
+            APISession.currentUserID = newValue
+        } get {
+            return APISession.currentUserID
+        }
     }
     
     public var token: String? {
