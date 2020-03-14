@@ -77,20 +77,52 @@ public class CFFoundation {
     }
     
     //MARK: Generic Request
-    public func getItem<T: Codable>(type: T.Type, from route: String, parameters: [String : Any]? = nil, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        APIClient.getItem(type: type, from: route, parameters: parameters, completionHandler: completionHandler)
+    public func getItem<T: Codable>(
+        responseType: T.Type,
+        from route: String,
+        parameters: [String : Any]? = nil,
+        completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        APIClient.getItem(
+            responseType: responseType,
+            from: route,
+            parameters: parameters,
+            completionHandler: completionHandler)
     }
     
-    public func getItems<T: Codable>(type: [T].Type, from route: String, parameters: [String : Any]? = nil, completionHandler: @escaping (Result<[T],NetworkError>) -> Void) {
-        APIClient.getItems(type: type, from: route, parameters: parameters, completionHandler: completionHandler)
+    public func getItems<T: Codable>(
+        responseType: [T].Type,
+        from route: String,
+        parameters: [String : Any]? = nil,
+        completionHandler: @escaping (Result<[T], NetworkError>) -> Void) {
+        APIClient.getItems(
+            responseType: responseType,
+            from: route,
+            parameters: parameters,
+            completionHandler: completionHandler)
     }
     
-    public func postItem<T: Codable>(itemToPost: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        APIClient.postItem(itemToPost: itemToPost, type: type, to: route, completionHandler: completionHandler)
+    public func postItem<T: Codable, Y: Decodable>(
+        itemToPost: T,
+        responseType: Y.Type,
+        to route: String,
+        completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
+        APIClient.postItem(
+            itemToPost: itemToPost,
+            responseType: responseType,
+            to: route,
+            completionHandler: completionHandler)
     }
     
-    public func putItem<T: Codable>(itemToPut: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        APIClient.putItem(itemToPut: itemToPut, type: type, to: route, completionHandler: completionHandler)
+    public func putItem<T: Codable, Y: Decodable>(
+        itemToPut: T,
+        responseType: Y.Type,
+        to route: String,
+        completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
+        APIClient.putItem(
+            itemToPut: itemToPut,
+            responseType: responseType,
+            to: route,
+            completionHandler: completionHandler)
     }
     
     public func deleteItem(route: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {

@@ -10,9 +10,17 @@ import Alamofire
 
 extension APIClient {
 
-    static func signUp<T: CFUserProtocol>(email: String, username: String, password: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+    static func signUp<T: CFUserProtocol>(
+        email: String,
+        username: String,
+        password: String,
+        userType: T.Type,
+        completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
         let parameters =  ["email" : email, "password" : password, "username" : username]
-        request(route: "/users/signup", method: .post, parameters: parameters) { (result) in
+        request(
+        route: "/users/signup",
+        method: .post,
+        parameters: parameters) { (result) in
             switch result {
             case .success(let data):
                 do {
@@ -48,16 +56,27 @@ extension APIClient {
         }
     }
     
-    static func getCurrentUser<T: CFUserProtocol>(userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+    static func getCurrentUser<T: CFUserProtocol>(
+        userType: T.Type,
+        completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
         if let id = APISession.currentUser?._id {
-            getItem(type: userType, from: "/users/" + id, completionHandler: completionHandler)
+            getItem(
+                responseType: userType,
+                from: "/users/" + id,
+                completionHandler: completionHandler)
         } else {
             completionHandler(.failure(.init(message: "No user id")))
         }
     }
     
-    static func getUser<T: CFUserProtocol>(by id: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        getItem(type: userType, from: "/users/" + id, completionHandler: completionHandler)
+    static func getUser<T: CFUserProtocol>(
+        by id: String,
+        userType: T.Type,
+        completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+        getItem(
+            responseType: userType,
+            from: "/users/" + id,
+            completionHandler: completionHandler)
     }
 }
 

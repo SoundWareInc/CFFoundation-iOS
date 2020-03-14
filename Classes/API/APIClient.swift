@@ -43,12 +43,16 @@ class APIClient {
         }
     }
     
-    static func getItem<T: Codable>(type: T.Type, from route: String, parameters: Parameters? = nil, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+    static func getItem<T: Decodable>(
+        responseType: T.Type,
+        from route: String,
+        parameters: Parameters? = nil,
+        completionHandler: @escaping (Result<T, NetworkError>) -> Void) {
         request(route: route, method: .get, parameters: parameters) { (result) in
             switch result {
             case .success(let data):
                 do {
-                    let item = try JSONDecoder().decode(type.self, from: data)
+                    let item = try JSONDecoder().decode(responseType.self, from: data)
                     completionHandler(.success(item))
                 } catch let error {
                     completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
@@ -59,12 +63,16 @@ class APIClient {
         }
     }
     
-    static func getItems<T: Codable>(type: [T].Type, from route: String, parameters: Parameters? = nil, completionHandler: @escaping (Result<[T],NetworkError>) -> Void) {
+    static func getItems<T: Decodable>(
+        responseType: [T].Type,
+        from route: String,
+        parameters: Parameters? = nil,
+        completionHandler: @escaping (Result<[T], NetworkError>) -> Void) {
         request(route: route, method: .get, parameters: parameters) { (result) in
             switch result {
             case .success(let data):
                 do {
-                    let item = try JSONDecoder().decode(type.self, from: data)
+                    let item = try JSONDecoder().decode(responseType.self, from: data)
                     completionHandler(.success(item))
                 } catch let error {
                     completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
@@ -75,7 +83,10 @@ class APIClient {
         }
     }
     
-    static func postItem<T: Codable>(itemToPost: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+    static func postItem<T: Codable, Y: Decodable>(
+        itemToPost: T,
+        responseType: Y.Type,
+        to route: String, completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
         let encoder = JSONEncoder()
         do {
             let jsonData = try encoder.encode(itemToPost)
@@ -84,7 +95,7 @@ class APIClient {
                 switch result {
                 case .success(let data):
                     do {
-                        let item = try JSONDecoder().decode(type.self, from: data)
+                        let item = try JSONDecoder().decode(responseType.self, from: data)
                         completionHandler(.success(item))
                     } catch let error {
                         completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
@@ -98,7 +109,11 @@ class APIClient {
         }
     }
     
-    static func putItem<T: Codable>(itemToPut: T, type: T.Type, to route: String, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
+    static func putItem<T: Codable, Y: Decodable>(
+        itemToPut: T,
+        responseType: Y.Type,
+        to route: String,
+        completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
         let encoder = JSONEncoder()
         do {
             let jsonData = try encoder.encode(itemToPut)
@@ -107,7 +122,7 @@ class APIClient {
                 switch result {
                 case .success(let data):
                     do {
-                        let item = try JSONDecoder().decode(type.self, from: data)
+                        let item = try JSONDecoder().decode(responseType.self, from: data)
                         completionHandler(.success(item))
                     } catch let error {
                         completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
@@ -121,7 +136,9 @@ class APIClient {
         }
     }
     
-    static func deleteItem(route: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
+    static func deleteItem(
+        route: String,
+        completionHandler: @escaping (Result<String, NetworkError>) -> Void) {
         request(route: route, method: .delete) { (result) in
             switch result {
             case .success(_):
