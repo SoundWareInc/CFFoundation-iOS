@@ -47,6 +47,7 @@ public class CFFoundation {
     }
     
     public var chatSessions: [CFChatSession]?
+    public var paymentsManager: PaymentsManager?
     
     //MARK: User Authentication
     public func signUp<T: CFUserProtocol>(email: String, username: String, password: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
