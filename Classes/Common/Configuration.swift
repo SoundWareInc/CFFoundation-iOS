@@ -8,7 +8,12 @@
 import Foundation
 enum Configuration {
     enum API {
-        static let BaseURL = "http://" + CFFoundation.shared.hostURL
+        static var BaseURL: String = {
+            if CFFoundation.shared.hostURL.hasPrefix("http://") || CFFoundation.shared.hostURL.hasPrefix("https://") {
+                return CFFoundation.shared.hostURL
+            }
+            return "http://" + CFFoundation.shared.hostURL
+        }()
         static let BaseChatURL = "ws://" + CFFoundation.shared.hostURL
     }
 }
