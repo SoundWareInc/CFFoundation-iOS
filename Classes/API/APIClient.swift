@@ -17,29 +17,46 @@ class APIClient {
         } else if let token = APISession.token {
             header = HTTPHeaders(["Authorization" : token])
         }
-        guard let encodedRoute = (Configuration.API.BaseURL + route).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return  }
-        session.request(encodedRoute, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: header).response { (data) in
-            guard let data = data.data else {
-                completionHandler(.failure(.init(message: "Bad Data")))
-                return
-            }
-            do {
-                let networkError = try JSONDecoder().decode(ResponseValidationError.self, from: data)
-                if var error = networkError.details.first {
-                    error.responseData = data
-                    completionHandler(.failure(error))
-                } else {
-                    completionHandler(.failure(.init(message: "Network Error", responseData: data)))
+        guard let encodedRoute = (Configuration.API.BaseURL + route).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
+        
+        session.request(encodedRoute, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: header)
+            .response { (response) in
+                let statusCode = response.response?.statusCode
+                var statusCodeMessage = ""
+                if let statusCode = response.response?.statusCode {
+                    statusCodeMessage = "\(statusCode): "
                 }
-            } catch {
-                do {
-                    var networkError = try JSONDecoder().decode(ResponseError.self, from: data)
-                    networkError.error.responseData = data
-                    completionHandler(.failure(networkError.error))
-                } catch {
-                    completionHandler(.success(data))
+                switch response.result {
+                case .success(let data):
+                    guard let data = data else {
+                        completionHandler(.failure(.init(statusCode: statusCode, message: statusCodeMessage + "No data in response")))
+                        return
+                    }
+                    do {
+                        let networkError = try JSONDecoder().decode(ResponseValidationError.self, from: data)
+                        if var error = networkError.details.first {
+                            error.responseData = data
+                            completionHandler(.failure(error))
+                        } else {
+                            completionHandler(.failure(.init(statusCode: statusCode, message: statusCodeMessage + "Error parsing ResponseValidationError", responseData: data)))
+                        }
+                    } catch {
+                        do {
+                            var networkError = try JSONDecoder().decode(ResponseError.self, from: data)
+                            networkError.error.responseData = data
+                            completionHandler(.failure(networkError.error))
+                        } catch {
+                            do {
+                                let networkError = try JSONDecoder().decode(GenericResponseError.self, from: data)
+                                completionHandler(.failure(.init(statusCode: statusCode, message: statusCodeMessage + networkError.error, responseData: data)))
+                            } catch {
+                                completionHandler(.success(data))
+                            }
+                        }
+                    }
+                case .failure(let error):
+                    completionHandler(.failure(.init(statusCode: error.responseCode, message: statusCodeMessage + error.localizedDescription)))
                 }
-            }
         }
     }
     

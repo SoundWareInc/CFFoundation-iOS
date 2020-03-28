@@ -23,7 +23,12 @@ struct ResponseValidationError: Codable {
     var details: [NetworkError]
 }
 
+struct GenericResponseError: Codable {
+    var error: String
+}
+
 public struct NetworkError: Error, Codable {
+    public var statusCode: Int?
     public var message: String
     public var responseData: Data?
 }

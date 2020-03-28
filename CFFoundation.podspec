@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'CFFoundation'
-  s.version      = '1.0.3'
+  s.version      = '1.0.4'
   s.license      =  { :type => 'MIT' }
   s.homepage     = 'https://github.com/robss88/CFFoundation-iOS'
   s.authors      = {
