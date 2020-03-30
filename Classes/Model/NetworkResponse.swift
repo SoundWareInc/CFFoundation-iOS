@@ -31,4 +31,10 @@ public struct NetworkError: Error, Codable {
     public var statusCode: Int?
     public var message: String
     public var responseData: Data?
+    
+    public init(statusCode: Int? = nil, message: String, responseData: Data? = nil) {
+        self.statusCode = statusCode
+        self.message = message
+        self.responseData = responseData
+    }
 }
