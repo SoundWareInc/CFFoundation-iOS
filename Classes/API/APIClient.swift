@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import Combine
 
 class APIClient {
     static let session = Session()
@@ -18,7 +19,7 @@ class APIClient {
             header = HTTPHeaders(["Authorization" : token])
         }
         guard let encodedRoute = (Configuration.API.BaseURL + route).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else { return }
-        
+
         session.request(encodedRoute, method: method, parameters: parameters, encoding: JSONEncoding.default, headers: header)
             .response { (response) in
                 let statusCode = response.response?.statusCode
@@ -59,23 +60,25 @@ class APIClient {
                 }
         }
     }
+
     
     static func getItem<T: Decodable>(
         responseType: T.Type,
         from route: String,
-        parameters: Parameters? = nil,
-        completionHandler: @escaping (Result<T, NetworkError>) -> Void) {
-        request(route: route, method: .get, parameters: parameters) { (result) in
-            switch result {
-            case .success(let data):
-                do {
-                    let item = try JSONDecoder().decode(responseType.self, from: data)
-                    completionHandler(.success(item))
-                } catch let error {
-                    completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
+        parameters: Parameters? = nil) -> Future<T, NetworkError> {
+        return Future { promise in
+            request(route: route, method: .get, parameters: parameters) { result in
+                switch result {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .success(let data):
+                    do {
+                        let item = try JSONDecoder().decode(responseType.self, from: data)
+                        promise(.success(item))
+                    } catch let error {
+                        promise(.failure(.init(message: error.localizedDescription, responseData: data)))
+                    }
                 }
-            case .failure(let error):
-                completionHandler(.failure(error))
             }
         }
     }
@@ -83,19 +86,20 @@ class APIClient {
     static func getItems<T: Decodable>(
         responseType: [T].Type,
         from route: String,
-        parameters: Parameters? = nil,
-        completionHandler: @escaping (Result<[T], NetworkError>) -> Void) {
-        request(route: route, method: .get, parameters: parameters) { (result) in
-            switch result {
-            case .success(let data):
-                do {
-                    let item = try JSONDecoder().decode(responseType.self, from: data)
-                    completionHandler(.success(item))
-                } catch let error {
-                    completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
+        parameters: Parameters? = nil) -> Future<[T], NetworkError> {
+        return Future { promise in
+            request(route: route, method: .get, parameters: parameters) { result in
+                switch result {
+                case .success(let data):
+                    do {
+                        let item = try JSONDecoder().decode(responseType.self, from: data)
+                        promise(.success(item))
+                    } catch let error {
+                        promise(.failure(.init(message: error.localizedDescription, responseData: data)))
+                    }
+                case .failure(let error):
+                    promise(.failure(error))
                 }
-            case .failure(let error):
-                completionHandler(.failure(error))
             }
         }
     }
@@ -103,67 +107,70 @@ class APIClient {
     static func postItem<T: Codable, Y: Decodable>(
         itemToPost: T,
         responseType: Y.Type,
-        to route: String, completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
-        let encoder = JSONEncoder()
-        do {
-            let jsonData = try encoder.encode(itemToPost)
-            let params = try JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? [String: Any]
-            request(route: route, method: .post, parameters: params) { (result) in
-                switch result {
-                case .success(let data):
-                    do {
-                        let item = try JSONDecoder().decode(responseType.self, from: data)
-                        completionHandler(.success(item))
-                    } catch let error {
-                        completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
+        to route: String) -> Future<Y, NetworkError> {
+        return Future { promise in
+            let encoder = JSONEncoder()
+            do {
+                let jsonData = try encoder.encode(itemToPost)
+                let params = try JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? [String: Any]
+                request(route: route, method: .post, parameters: params) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let item = try JSONDecoder().decode(responseType.self, from: data)
+                            promise(.success(item))
+                        } catch let error {
+                            promise(.failure(.init(message: error.localizedDescription, responseData: data)))
+                        }
+                    case .failure(let error):
+                        promise(.failure(error))
                     }
-                case .failure(let error):
-                    completionHandler(.failure(error))
                 }
+            } catch let error {
+                promise(.failure(.init(message: error.localizedDescription)))
             }
-        } catch let error {
-            completionHandler(.failure(.init(message: error.localizedDescription)))
         }
     }
     
     static func putItem<T: Codable, Y: Decodable>(
         itemToPut: T,
         responseType: Y.Type,
-        to route: String,
-        completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
-        let encoder = JSONEncoder()
-        do {
-            let jsonData = try encoder.encode(itemToPut)
-            let params = try JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? [String: Any]
-            request(route: route, method: .put, parameters: params) { (result) in
-                switch result {
-                case .success(let data):
-                    do {
-                        let item = try JSONDecoder().decode(responseType.self, from: data)
-                        completionHandler(.success(item))
-                    } catch let error {
-                        completionHandler(.failure(.init(message: error.localizedDescription, responseData: data)))
+        to route: String) -> Future<Y, NetworkError> {
+        return Future { promise in
+            let encoder = JSONEncoder()
+            do {
+                let jsonData = try encoder.encode(itemToPut)
+                let params = try JSONSerialization.jsonObject(with: jsonData, options: .allowFragments) as? [String: Any]
+                request(route: route, method: .put, parameters: params) { result in
+                    switch result {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .success(let data):
+                        do {
+                            let item = try JSONDecoder().decode(responseType.self, from: data)
+                            promise(.success(item))
+                        } catch let error {
+                            promise(.failure(.init(message: error.localizedDescription, responseData: data)))
+                        }
                     }
-                case .failure(let error):
-                    completionHandler(.failure(error))
                 }
+            } catch let error {
+                promise(.failure(.init(message: error.localizedDescription)))
             }
-        } catch let error {
-            completionHandler(.failure(.init(message: error.localizedDescription)))
         }
     }
     
     static func deleteItem(
-        route: String,
-        completionHandler: @escaping (Result<String, NetworkError>) -> Void) {
-        request(route: route, method: .delete) { (result) in
-            switch result {
-            case .success(_):
-                completionHandler(.success("deleted"))
-            case .failure(let error):
-                completionHandler(.failure(error))
+        route: String) -> Future<String, NetworkError> {
+        return Future { promise in
+            request(route: route, method: .delete) { result in
+                switch result {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .success:
+                    promise(.success("deleted"))
+                }
             }
-        }
+        };
     }
-    
 }
