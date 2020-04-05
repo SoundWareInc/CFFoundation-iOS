@@ -18,62 +18,58 @@ extension APIClient {
         userType: T.Type) -> Future<T,NetworkError> {
         return Future { promise in
             let parameters =  ["email" : email, "password" : password, "username" : username]
-            _ = request(
-            route: "/users/signup",
-            method: .post,
-            parameters: parameters).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
-                switch result {
-                case .failure(let error):
-                    promise(.failure(error))
-                case .finished:
-                    print("finished")
-                }
-            }, receiveValue: { data in
-                do {
-                    let response = try JSONDecoder().decode(SignInResponse.self, from: data)
-                    APISession.token = response.token
-                    APISession.currentUser = response.user
-                    _ = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
-                        
-                    }, receiveValue: { data in
-                        promise(.success(data))
-                    })
-                } catch let error {
-                    promise(.failure(.init(message: error.localizedDescription, responseData: data)))
-                }
-            })
+            request(
+                route: "/users/signup",
+                method: .post,
+                parameters: parameters) { result in
+                    switch result {
+                    case .failure(let error):
+                        promise(.failure(error))
+                    case .success(let data):
+                        do {
+                            let response = try JSONDecoder().decode(SignInResponse.self, from: data)
+                            APISession.token = response.token
+                            APISession.currentUser = response.user
+                            _ = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+
+                            }, receiveValue: { data in
+                                promise(.success(data))
+                            })
+                        } catch let error {
+                            promise(.failure(.init(message: error.localizedDescription, responseData: data)))
+                        }
+                    }
+            }
         }
     }
     
     static func signIn<T: CFUserProtocol>(email: String, password: String, userType: T.Type) -> Future<T,NetworkError> {
         return Future { promise in
             let parameters =  ["email" : email, "password" : password]
-            _ = request(route: "/users/signin", method: .post, parameters: parameters).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+            _ = request(route: "/users/signin", method: .post, parameters: parameters) { result in
                 switch result {
                 case .failure(let error):
                     promise(.failure(error))
-                case .finished:
-                    print("finished")
+                case .success(let data):
+                    do {
+                        let response = try JSONDecoder().decode(SignInResponse.self, from: data)
+                        APISession.token = response.token
+                        APISession.currentUser = response.user
+                        _ = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+                            switch result {
+                            case .failure(let error):
+                                promise(.failure(error))
+                            case .finished:
+                                print("finished")
+                            }
+                        }, receiveValue: { data in
+                            promise(.success(data))
+                        })
+                    } catch let error {
+                        promise(.failure(.init(message: error.localizedDescription, responseData: data)))
+                    }
                 }
-            }, receiveValue: { data in
-                do {
-                    let response = try JSONDecoder().decode(SignInResponse.self, from: data)
-                    APISession.token = response.token
-                    APISession.currentUser = response.user
-                    _ = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
-                        switch result {
-                        case .failure(let error):
-                            promise(.failure(error))
-                        case .finished:
-                            print("finished")
-                        }
-                    }, receiveValue: { data in
-                        promise(.success(data))
-                    })
-                } catch let error {
-                    promise(.failure(.init(message: error.localizedDescription, responseData: data)))
-                }
-            })
+            }
         }
     }
     
@@ -104,17 +100,17 @@ extension APIClient {
         userType: T.Type) -> Future<T,NetworkError> {
         return Future { promise in
             _ = getItem(
-            responseType: userType,
-            from: "/users/" + id).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
-                switch result {
-                case .finished:
-                    print("finished")
-                case .failure(let error):
-                    promise(.failure(error))
-                }
-            }, receiveValue: { data in
-                promise(.success(data))
-            })
+                responseType: userType,
+                from: "/users/" + id).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+                    switch result {
+                    case .finished:
+                        print("finished")
+                    case .failure(let error):
+                        promise(.failure(error))
+                    }
+                }, receiveValue: { data in
+                    promise(.success(data))
+                })
         }
     }
 }
