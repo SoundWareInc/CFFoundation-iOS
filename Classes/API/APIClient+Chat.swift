@@ -7,16 +7,21 @@
 //
 
 import Foundation
+import Combine
 
 extension APIClient {
-    static func chatInvite(user: CFUserProtocol, to roomId: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
-        request(route: "/chat/" + roomId + "/invite/" + user._id!, method: .post) { (result) in
-            switch result {
-            case .success( _):
-                completionHandler(.success(roomId))
-            case .failure(let error):
-                completionHandler(.failure(error))
-            }
+    static func chatInvite(user: CFUserProtocol, to roomId: String) -> Future<String,NetworkError> {
+        return Future { promise in
+            _ = request(route: "/chat/" + roomId + "/invite/" + user._id!, method: .post).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+                switch result {
+                case .failure(let error):
+                    promise(.failure(error))
+                case .finished:
+                    print("finished")
+                }
+            }, receiveValue: { data in
+                promise(.success(roomId))
+            })
         }
     }
 }

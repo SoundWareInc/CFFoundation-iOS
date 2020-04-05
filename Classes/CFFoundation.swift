@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Combine
 
 public class CFFoundation {
     
@@ -50,12 +51,12 @@ public class CFFoundation {
     public var paymentsManager: PaymentsManager?
     
     //MARK: User Authentication
-    public func signUp<T: CFUserProtocol>(email: String, username: String, password: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        APIClient.signUp(email: email, username: username, password: password, userType: userType, completionHandler: completionHandler)
+    public func signUp<T: CFUserProtocol>(email: String, username: String, password: String, userType: T.Type) -> Future<T,NetworkError> {
+        return APIClient.signUp(email: email, username: username, password: password, userType: userType)
     }
     
-    public func signIn<T: CFUserProtocol>(email: String, password: String, userType: T.Type, completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        APIClient.signIn(email: email, password: password, userType: userType, completionHandler: completionHandler)
+    public func signIn<T: CFUserProtocol>(email: String, password: String, userType: T.Type) -> Future<T,NetworkError> {
+        return APIClient.signIn(email: email, password: password, userType: userType)
     }
     
     public func logOut() {
@@ -81,53 +82,45 @@ public class CFFoundation {
     public func getItem<T: Codable>(
         responseType: T.Type,
         from route: String,
-        parameters: [String : Any]? = nil,
-        completionHandler: @escaping (Result<T,NetworkError>) -> Void) {
-        APIClient.getItem(
+        parameters: [String : Any]? = nil) -> Future<T,NetworkError> {
+        return APIClient.getItem(
             responseType: responseType,
             from: route,
-            parameters: parameters,
-            completionHandler: completionHandler)
+            parameters: parameters)
     }
     
     public func getItems<T: Codable>(
         responseType: [T].Type,
         from route: String,
-        parameters: [String : Any]? = nil,
-        completionHandler: @escaping (Result<[T], NetworkError>) -> Void) {
-        APIClient.getItems(
+        parameters: [String : Any]? = nil) -> Future<[T], NetworkError> {
+        return APIClient.getItems(
             responseType: responseType,
             from: route,
-            parameters: parameters,
-            completionHandler: completionHandler)
+            parameters: parameters)
     }
     
     public func postItem<T: Codable, Y: Decodable>(
         itemToPost: T,
         responseType: Y.Type,
-        to route: String,
-        completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
-        APIClient.postItem(
+        to route: String) -> Future<Y, NetworkError> {
+        return APIClient.postItem(
             itemToPost: itemToPost,
             responseType: responseType,
-            to: route,
-            completionHandler: completionHandler)
+            to: route)
     }
     
     public func putItem<T: Codable, Y: Decodable>(
         itemToPut: T,
         responseType: Y.Type,
-        to route: String,
-        completionHandler: @escaping (Result<Y, NetworkError>) -> Void) {
-        APIClient.putItem(
+        to route: String) -> Future<Y, NetworkError> {
+        return APIClient.putItem(
             itemToPut: itemToPut,
             responseType: responseType,
-            to: route,
-            completionHandler: completionHandler)
+            to: route)
     }
     
-    public func deleteItem(route: String, completionHandler: @escaping (Result<String,NetworkError>) -> Void) {
-        APIClient.deleteItem(route: route, completionHandler: completionHandler)
+    public func deleteItem(route: String) -> Future<String,NetworkError> {
+        return APIClient.deleteItem(route: route)
     }
     
     //MARK: Session
