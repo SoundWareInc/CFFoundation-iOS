@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'CFFoundation'
-  s.version      = '1.0.5'
+  s.version      = '1.0.6'
   s.license      =  { :type => 'MIT' }
   s.homepage     = 'https://github.com/robss88/CFFoundation-iOS'
   s.authors      = {
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   }
   s.source_files = 'Classes/**/*.swift'
 
-  s.ios.deployment_target = '10.0'
+  s.ios.deployment_target = '13.0'
   s.ios.dependency 'Socket.IO-Client-Swift'
   s.ios.dependency 'Alamofire', '~> 5.0.0-rc.3'
 
