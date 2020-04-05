@@ -10,6 +10,10 @@ import Alamofire
 import Combine
 
 extension APIClient {
+    private static var signUpCancellable: AnyCancellable? = nil
+    private static var signInCancellable: AnyCancellable? = nil
+    private static var currentUserCancellable: AnyCancellable? = nil
+    private static var userCancellable: AnyCancellable? = nil
 
     static func signUp<T: CFUserProtocol>(
         email: String,
@@ -30,7 +34,7 @@ extension APIClient {
                             let response = try JSONDecoder().decode(SignInResponse.self, from: data)
                             APISession.token = response.token
                             APISession.currentUser = response.user
-                            _ = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+                            signUpCancellable = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
 
                             }, receiveValue: { data in
                                 promise(.success(data))
@@ -55,7 +59,7 @@ extension APIClient {
                         let response = try JSONDecoder().decode(SignInResponse.self, from: data)
                         APISession.token = response.token
                         APISession.currentUser = response.user
-                        _ = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
+                        signInCancellable = getCurrentUser(userType: userType).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
                             switch result {
                             case .failure(let error):
                                 promise(.failure(error))
@@ -77,7 +81,7 @@ extension APIClient {
         userType: T.Type) -> Future<T,NetworkError> {
         return Future { promise in
             if let id = APISession.currentUser?._id {
-                _ = getItem(
+                currentUserCancellable = getItem(
                     responseType: userType,
                     from: "/users/" + id).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
                         switch result {
@@ -99,7 +103,7 @@ extension APIClient {
         by id: String,
         userType: T.Type) -> Future<T,NetworkError> {
         return Future { promise in
-            _ = getItem(
+            userCancellable = getItem(
                 responseType: userType,
                 from: "/users/" + id).receive(on: DispatchQueue.main).sink(receiveCompletion: { result in
                     switch result {
